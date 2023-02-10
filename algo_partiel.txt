@@ -3,7 +3,7 @@
 ||||||||||||||||||||||
 
 
-#### Initialisation ####
+###### Initialisation ######
 
 tab_x [0,0]
 tab_y [0,0]
@@ -11,7 +11,7 @@ max_size 400        ; taille max de la fenetre
 var nombre
 
 
-#### Code ####
+###### Code ######
 
 faire 3 fois :
 
@@ -35,7 +35,6 @@ faire 3 fois :
 Fin boucle 
 
 
-??? Dessiner les segments du triangles ???
 
 
 ; coordonnées de la ligne 1 (noire)
@@ -58,7 +57,8 @@ call XDrawLine
 
 
 
-#### notes ####
+###### notes ######
+
 --> une fonction pour le nombre aléatoire ( de la ligne 19 à 22)
 --> une fonction pour calculer le determinant (faire les calculs sotcker le resultat (positif ou non) et l'interpreté dans le main)
 --> tableaux pour les x et tableau pour les y | et du coup lire tout les 
