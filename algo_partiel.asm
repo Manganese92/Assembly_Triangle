@@ -1,38 +1,16 @@
-; Initialize the random number generator
-mov eax, [seed]  ; Load the seed into EAX
-mul eax, 0xDEADBEEF ; Multiply by a magic constant
-add eax, 0xDEADCAFE ; Add another constant
-mov [seed], eax   ; Store the result back as the new seed
+||||||||||||||||||||||
+||     # ALGO #     ||
+||||||||||||||||||||||
 
-; Generate a random number between min and max
-mov eax, [seed]  ; Load the seed into EAX
-mul eax, 0xDEADBEEF ; Multiply by a magic constant
-add eax, 0xDEADCAFE ; Add another constant
-mov [seed], eax   ; Store the result back as the new seed
-mov eax, [min]    ; Load the minimum value
-imul eax, [max]   ; Multiply it by the maximum value
-cdq               ; Sign-extend EAX into EDX
-idiv [max]        ; Divide EDX:EAX by the maximum value
-add eax, [min]    ; Add the minimum value back
+
+tab_x [0,0]
+tab_y [0,0]
+
+for 
 
 
 
 
-//////////////////////
-//     ALGO        //
-////////////////////
-
-Demander le nombre de triangles
-
-boucle x nombre de triangles:
-    boucle coordonées x3:
-        génère un x
-        le stocker
-        génère un y 
-        le stocker
-        stocker les deux ensembles
-    fin boucle
-
-
---> faire une ligne à l'horizontale et verticale qui passe par chaque point du triangle 
- 
+--> tableaux pour les x et tableau pour les y | et du coup lire tout les 
+ --> x min x max 
+ --> y min y max
