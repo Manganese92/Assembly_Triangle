@@ -1,6 +1,6 @@
-||||||||||||||||||||||
-||     # ALGO #     ||
-||||||||||||||||||||||
+    ||||||||||||||||||||||
+    ||     # ALGO #     ||
+    ||||||||||||||||||||||
 
 
 ###### Initialisation ######
@@ -9,6 +9,11 @@ tab_x [0,0]
 tab_y [0,0]
 max_size 400        ; taille max de la fenetre
 var nombre
+vecteur_X1
+vecteur_X2
+vecteur_Y1
+vecteur_Y2
+determinant
 
 
 ###### Code ######
@@ -53,6 +58,30 @@ push qword[y2]		; coordonnée destination en y
 call XDrawLine
 
 
+
+calcul_determinant:
+    ; création du vecteur BA
+    vecteur_X1 <-- tab_x[0]
+    sub vecteur_X1, tab_x[1]     ; on soustrait les deux position X de deux points pour faire un vecteur
+    vecteur_Y1 <-- tab_y[0
+    sub vecteur_Y1, tab_y [1]    ; on soustrait les deux position y de deux points pour faire un vecteur
+
+    ; création du vecteur BC
+    vecteur_X2 <-- tab_x[1]
+    sub vecteur_X2, tab_x[2]     ; on soustrait les deux position X de deux points pour faire un vecteur
+    vecteur_Y2 <-- tab_y[1]
+    sub vecteur_Y2, tab_y [2]    ; on soustrait les deux position y de deux points pour faire un vecteur
+
+    ; calcul du determinant 
+    mul vecteur_X1, vecteur_X2
+    mul vecteur_Y1, vecteur_Y2
+    ; trouver un moyen plus optimiser pour mettre directement le resultat dans determinant
+    sub vecteur_X1, vecteur_Y1
+    mov determinant, vecteur_X1
+
+    comparer determinant à 0
+    jump to direct if inferieur 
+    jump to indirect if superieur
 
 
 
