@@ -38,13 +38,11 @@ Fin boucle
 ??? Dessiner les segments du triangles ???
 
 
-mettre 
-
 ; coordonnées de la ligne 1 (noire)
-mov dword[x1],300
-mov dword[y1],50
-mov dword[x2],50
-mov dword[y2],350
+mov dword[x1],300       ;remplacer la valeur par le x mis dans le tableau pour le premier point
+mov dword[y1],50        ;remplacer la valeur par le y mis dans le tableau pour le premier point
+mov dword[x2],50        ;remplacer la valeur par le x mis dans le tableau pour le second point
+mov dword[y2],350       ;remplacer la valeur par le y mis dans le tableau pour le second point
 ; dessin de la ligne 1
 mov rdi,qword[display_name]
 mov rsi,qword[window]
@@ -54,6 +52,9 @@ mov r8d,dword[y1]	; coordonnée source en y
 mov r9d,dword[x2]	; coordonnée destination en x
 push qword[y2]		; coordonnée destination en y
 call XDrawLine
+
+
+
 
 
 
