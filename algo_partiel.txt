@@ -1,0 +1,65 @@
+||||||||||||||||||||||
+||     # ALGO #     ||
+||||||||||||||||||||||
+
+
+#### Initialisation ####
+
+tab_x [0,0]
+tab_y [0,0]
+max_size 400        ; taille max de la fenetre
+var nombre
+
+
+#### Code ####
+
+faire 3 fois :
+
+    nb_aléatoire_x:
+        rdrand nombreX
+        comparer CF à 1
+        jump if not equal à nb_aléatoire_x
+        div 400         ; si 400 est mis dans dx et nombreX dans ax alors on fera div dx et le modulo sera dans dx après
+        tab_x <-- valeur dx 
+        augmenter le compteur pour arriver sur la deuxième place du tableau / Puis la troisième 
+
+
+    nb_aléatoire_y:
+        rdrand nombreY
+        comparer CF à 1
+        jump if not equal à nb_aléatoire_y
+        div 400         ; si 400 est mis dans dx et nombreY dans ax alors on fera div dx et le modulo sera dans dx après
+        tab_x <-- valeur dx 
+        augmenter le compteur pour arriver sur la deuxième place du tableau / Puis la troisième 
+
+Fin boucle 
+
+
+??? Dessiner les segments du triangles ???
+
+
+mettre 
+
+; coordonnées de la ligne 1 (noire)
+mov dword[x1],300
+mov dword[y1],50
+mov dword[x2],50
+mov dword[y2],350
+; dessin de la ligne 1
+mov rdi,qword[display_name]
+mov rsi,qword[window]
+mov rdx,qword[gc]
+mov ecx,dword[x1]	; coordonnée source en x
+mov r8d,dword[y1]	; coordonnée source en y
+mov r9d,dword[x2]	; coordonnée destination en x
+push qword[y2]		; coordonnée destination en y
+call XDrawLine
+
+
+
+#### notes ####
+--> une fonction pour le nombre aléatoire ( de la ligne 19 à 22)
+--> une fonction pour calculer le determinant (faire les calculs sotcker le resultat (positif ou non) et l'interpreté dans le main)
+--> tableaux pour les x et tableau pour les y | et du coup lire tout les 
+ --> x min x max 
+ --> y min y max
