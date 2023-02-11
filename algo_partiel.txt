@@ -14,6 +14,10 @@ vecteur_X2
 vecteur_Y1
 vecteur_Y2
 determinant
+min_x
+max_x
+min_y
+max_y
 
 
 ###### Code ######
@@ -39,6 +43,13 @@ faire 3 fois :
 
 Fin boucle 
 
+
+parcourir tab_x 
+min_x <-- la plus petite valeur de tab_x
+max_x <-- la plus grande valeur de tab_x
+parcourir tab_y
+min_y <-- la plus petite valeur de tab_y
+max_y <-- la plus grande valeur de tab_y
 
 
 
@@ -82,6 +93,10 @@ calcul_determinant:
     comparer determinant à 0
     jump to direct if inferieur 
     jump to indirect if superieur
+
+
+direct:
+
 
 
 
