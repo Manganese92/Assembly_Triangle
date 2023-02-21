@@ -44,6 +44,7 @@ faire 3 fois :
 Fin boucle 
 
 
+
 parcourir tab_x 
 min_x <-- la plus petite valeur de tab_x
 max_x <-- la plus grande valeur de tab_x
@@ -96,9 +97,9 @@ calcul_determinant:
 
 
 direct:
-
-
-
+    pour x allant de min_x à max_x :
+        pour y allant de min_y à max_y:
+        
 
 
 ###### notes ######
