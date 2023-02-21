@@ -53,15 +53,97 @@ mov byte[i],1
 
 min_max:
     min_max_x:
-        mov ecx,byte[i]      ; on copie i dans ecx
+        mov ecx,byte[i]  
         move eax, tabx[0]
         move max_x, eax
         move min_x, eax
         move eax, [tabx+ ecx*WORD]
 
-        inc byte[i]             ; on incrémente i
-	    cmp byte[i],2         ; on compare i avec 2 
-	    jb min_max_x      ; si i<10, on saute à boucle_demande
+        inc byte[i] 
+	    cmp byte[i],2  
+	    jne min_max_x 
+
+    mov byte[i],1
+
+    min_max_y:
+        mov ecx,byte[i]   
+        move eax, taby[0]
+        move max_y, eax
+        move min_y, eax
+        move eax, [taby+ ecx*WORD]
+
+        inc byte[i]
+	    cmp byte[i],2
+	    jne min_max_y
+
+
+
+;||||||||||||||||||||||||||||||||||||||||||||
+;||||||||| lignes d'un triangle |||||||||||||
+;||||||||||||||||||||||||||||||||||||||||||||
+
+
+dessin_lignes_triangles:
+    
+        ; coordonnées de la ligne AB (noire)
+    mov r8, tabx[0]
+    mov r9, taby[0]
+    mov dword[x1],r8       ;remplacer la valeur par le x mis dans le tableau pour le premier point
+    mov dword[y1],r9        ;remplacer la valeur par le y mis dans le tableau pour le premier point
+    mov r10, tabx[1]
+    mov r11, taby[1]
+    mov dword[x2],r10        ;remplacer la valeur par le x mis dans le tableau pour le second point
+    mov dword[y2],r11       ;remplacer la valeur par le y mis dans le tableau pour le second point
+    ; dessin de la ligne 1
+    mov rdi,qword[display_name]
+    mov rsi,qword[window]
+    mov rdx,qword[gc]
+    mov ecx,dword[x1]	; coordonnée source en x
+    mov r8d,dword[y1]	; coordonnée source en y
+    mov r9d,dword[x2]	; coordonnée destination en x
+    push qword[y2]		; coordonnée destination en y
+    call XDrawLine 
+
+
+        ; coordonnées de la ligne AB (noire)
+    mov r8, tabx[1]
+    mov r9, taby[1]
+    mov dword[x1],r8       ;remplacer la valeur par le x mis dans le tableau pour le premier point
+    mov dword[y1],r9        ;remplacer la valeur par le y mis dans le tableau pour le premier point
+    mov r10, tabx[2]
+    mov r11, taby[2]
+    mov dword[x2],r10        ;remplacer la valeur par le x mis dans le tableau pour le second point
+    mov dword[y2],r11       ;remplacer la valeur par le y mis dans le tableau pour le second point
+    ; dessin de la ligne 1
+    mov rdi,qword[display_name]
+    mov rsi,qword[window]
+    mov rdx,qword[gc]
+    mov ecx,dword[x1]	; coordonnée source en x
+    mov r8d,dword[y1]	; coordonnée source en y
+    mov r9d,dword[x2]	; coordonnée destination en x
+    push qword[y2]		; coordonnée destination en y
+    call XDrawLine 
+
+
+        ; coordonnées de la ligne AB (noire)
+    mov r8, tabx[2]
+    mov r9, taby[2]
+    mov dword[x1],r8       ;remplacer la valeur par le x mis dans le tableau pour le premier point
+    mov dword[y1],r9        ;remplacer la valeur par le y mis dans le tableau pour le premier point
+    mov r10, tabx[0]
+    mov r11, taby[0]
+    mov dword[x2],r10        ;remplacer la valeur par le x mis dans le tableau pour le second point
+    mov dword[y2],r11       ;remplacer la valeur par le y mis dans le tableau pour le second point
+    ; dessin de la ligne 1
+    mov rdi,qword[display_name]
+    mov rsi,qword[window]
+    mov rdx,qword[gc]
+    mov ecx,dword[x1]	; coordonnée source en x
+    mov r8d,dword[y1]	; coordonnée source en y
+    mov r9d,dword[x2]	; coordonnée destination en x
+    push qword[y2]		; coordonnée destination en y
+    call XDrawLine 
+
 
 
 ;||||||||||||||||||||||||||||||||||||||||||||
