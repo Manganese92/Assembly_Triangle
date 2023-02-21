@@ -32,7 +32,7 @@ main:
 
 nb_aleatoire_x:
     call random_point
-    move tabx,dx
+    mov tabx,dx
     cmp count,3
     je nb_aleatoire_y
     inc count
@@ -41,7 +41,7 @@ nb_aleatoire_x:
 
 nb_aleatoire_y:
     call random_point
-    move tab_y,dx
+    mov tab_y,dx
     cmp count,5
     je min_max
     inc count
@@ -54,10 +54,10 @@ mov byte[i],1
 min_max:
     min_max_x:
         mov ecx,byte[i]  
-        move eax, tabx[0]
-        move max_x, eax
-        move min_x, eax
-        move eax, [tabx+ ecx*WORD]
+        mov eax, tabx[0]
+        mov max_x, eax
+        mov min_x, eax
+        mov eax, [tabx+ ecx*WORD]
 
         inc byte[i] 
 	    cmp byte[i],2  
@@ -67,10 +67,10 @@ min_max:
 
     min_max_y:
         mov ecx,byte[i]   
-        move eax, taby[0]
-        move max_y, eax
-        move min_y, eax
-        move eax, [taby+ ecx*WORD]
+        mov eax, taby[0]
+        mov max_y, eax
+        mov min_y, eax
+        mov eax, [taby+ ecx*WORD]
 
         inc byte[i]
 	    cmp byte[i],2
@@ -186,7 +186,7 @@ global random_point
 
 random_point:
 
-    move dx,max_size
+    mov dx,max_size
     rdrand ax
     cmp CF,1
     jne rander_point ; est-ce possible ?
