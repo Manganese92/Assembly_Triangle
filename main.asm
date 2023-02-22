@@ -123,10 +123,10 @@ mov word[i],1
 
 min_max:
     min_max_x:
-        mov ecx,word[i]  
+        movzx ecx,word[i]  
         mov eax, [tabx + 0 * WORD]
-        mov max_x, eax
-        mov min_x, eax
+        mov dword[max_x], eax
+        mov dword[min_x], eax
         mov eax, [tabx+ ecx*WORD]
 
         inc word[i] 
@@ -136,10 +136,10 @@ min_max:
     mov byte[i],1
 
     min_max_y:
-        mov ecx,word[i]   
+        movzx ecx,word[i]   
         mov eax, [taby + 0 * WORD]
-        mov max_y, eax
-        mov min_y, eax
+        mov dword[max_y], eax
+        mov dword[min_y], eax
         mov eax, [taby+ ecx*WORD]
 
         inc word[i]
@@ -153,7 +153,68 @@ min_max:
 ;||||||||||||||||||||||||||||||||||||||||||||
 
 
-dessin_lignes_triangles:
+xor     rdi,rdi
+call    XOpenDisplay	; Création de display
+mov     qword[display_name],rax	; rax=nom du display
+
+; display_name structure
+; screen = DefaultScreen(display_name);
+mov     rax,qword[display_name]
+mov     eax,dword[rax+0xe0]
+mov     dword[screen],eax
+
+mov rdi,qword[display_name]
+mov esi,dword[screen]
+call XRootWindow
+mov rbx,rax
+
+mov rdi,qword[display_name]
+mov rsi,rbx
+mov rdx,10
+mov rcx,10
+mov r8,400	; largeur
+mov r9,400	; hauteur
+push 0xFFFFFF	; background  0xRRGGBB
+push 0x00FF00
+push 1
+call XCreateSimpleWindow
+mov qword[window],rax
+
+mov rdi,qword[display_name]
+mov rsi,qword[window]
+mov rdx,131077 ;131072
+call XSelectInput
+
+mov rdi,qword[display_name]
+mov rsi,qword[window]
+call XMapWindow
+
+mov rsi,qword[window]
+mov rdx,0
+mov rcx,0
+call XCreateGC
+mov qword[gc],rax
+
+mov rdi,qword[display_name]
+mov rsi,qword[gc]
+mov rdx,0x000000	; Couleur du crayon
+call XSetForeground
+
+boucle: ; boucle de gestion des évènements
+mov rdi,qword[display_name]
+mov rsi,event
+call XNextEvent
+
+cmp dword[event],ConfigureNotify	; à l'apparition de la fenêtre
+je dessin							; on saute au label 'dessin'
+
+cmp dword[event],KeyPress			; Si on appuie sur une touche
+je closeDisplay						; on saute au label 'closeDisplay' qui ferme la fenêtre
+jmp boucle
+
+
+
+dessin:
     
         ; coordonnées de la ligne AB (noire)
     mov r8d, [tabx + 0 * WORD]
@@ -214,6 +275,21 @@ dessin_lignes_triangles:
     push qword[y2]		; coordonnée destination en y
     call XDrawLine 
 
+jmp flush
+
+flush:
+mov rdi,qword[display_name]
+call XFlush
+jmp boucle
+mov rax,34
+syscall
+
+closeDisplay:
+    mov     rax,qword[display_name]
+    mov     rdi,rax
+    call    XCloseDisplay
+    xor	    rdi,rdi
+    call    exit
 
 ;||||||||||||||||||||||||||||||||||||||||||||
 ;||||||| determinant d'un triangle ||||||||||
