@@ -1,9 +1,11 @@
+%define WORD 2
+
 global main
 
 
 section .data
 
-max_size, 400 
+max_size: dw 400 
 min_x: dw 0
 max_x: dw 0
 min_y: dw 0
@@ -12,8 +14,8 @@ max_y: dw 0
 section .bss
 
 
-tabx:  	dw    3
-taby:  	dw    3
+tabx:  	resw    3
+taby:  	resw    3
 i: resb 0
 
 
