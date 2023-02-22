@@ -97,52 +97,53 @@ main:
 ;||||||||| Création d'un triangle |||||||||||
 ;||||||||||||||||||||||||||||||||||||||||||||
 
-mov byte[i],1
+mov word[i],1
 
 nb_aleatoire_x:
+    movzx ecx,word[i] 
     call random_point
-    mov tabx,dx
-    cmp byte[i],3
+    mov [tabx + ecx * WORD],dx
+    cmp word[i],3
     je nb_aleatoire_y
-    inc byte[i]
+    inc word[i]
     jmp nb_aleatoire_x
     
 
 nb_aleatoire_y:
     call random_point
-    mov taby,dx
-    cmp byte[i],5
+    mov [tabx + ecx * WORD],dx
+    cmp word[i],5
     je min_max
-    inc byte[i]
+    inc word[i]
     jmp nb_aleatoire_y
 
 
-mov byte[i],1
+mov word[i],1
 
 
 min_max:
     min_max_x:
-        mov ecx,byte[i]  
-        mov eax, tabx[0]
+        mov ecx,word[i]  
+        mov eax, [tabx + 0 * WORD]
         mov max_x, eax
         mov min_x, eax
         mov eax, [tabx+ ecx*WORD]
 
-        inc byte[i] 
-	    cmp byte[i],2  
+        inc word[i] 
+	    cmp word[i],2  
 	    jne min_max_x 
 
     mov byte[i],1
 
     min_max_y:
-        mov ecx,byte[i]   
-        mov eax, taby[0]
+        mov ecx,word[i]   
+        mov eax, [taby + 0 * WORD]
         mov max_y, eax
         mov min_y, eax
         mov eax, [taby+ ecx*WORD]
 
-        inc byte[i]
-	    cmp byte[i],2
+        inc word[i]
+	    cmp word[i],2
 	    jne min_max_y
 
 
@@ -155,14 +156,14 @@ min_max:
 dessin_lignes_triangles:
     
         ; coordonnées de la ligne AB (noire)
-    mov r8, tabx[0]
-    mov r9, taby[0]
-    mov dword[x1],r8       ;remplacer la valeur par le x mis dans le tableau pour le premier point
-    mov dword[y1],r9        ;remplacer la valeur par le y mis dans le tableau pour le premier point
-    mov r10, tabx[1]
-    mov r11, taby[1]
-    mov dword[x2],r10        ;remplacer la valeur par le x mis dans le tableau pour le second point
-    mov dword[y2],r11       ;remplacer la valeur par le y mis dans le tableau pour le second point
+    mov r8d, [tabx + 0 * WORD]
+    mov r9d, [taby + 0 * WORD]
+    mov dword[x1],r8d       ;remplacer la valeur par le x mis dans le tableau pour le premier point
+    mov dword[y1],r9d        ;remplacer la valeur par le y mis dans le tableau pour le premier point
+    mov r10d, [tabx + 1 * WORD]
+    mov r11d, [tabx + 1 * WORD]
+    mov dword[x2],r10d        ;remplacer la valeur par le x mis dans le tableau pour le second point
+    mov dword[y2],r11d       ;remplacer la valeur par le y mis dans le tableau pour le second point
     ; dessin de la ligne 1
     mov rdi,qword[display_name]
     mov rsi,qword[window]
@@ -174,15 +175,15 @@ dessin_lignes_triangles:
     call XDrawLine 
 
 
-        ; coordonnées de la ligne AB (noire)
-    mov r8, tabx[1]
-    mov r9, taby[1]
-    mov dword[x1],r8       ;remplacer la valeur par le x mis dans le tableau pour le premier point
-    mov dword[y1],r9        ;remplacer la valeur par le y mis dans le tableau pour le premier point
-    mov r10, tabx[2]
-    mov r11, taby[2]
-    mov dword[x2],r10        ;remplacer la valeur par le x mis dans le tableau pour le second point
-    mov dword[y2],r11       ;remplacer la valeur par le y mis dans le tableau pour le second point
+        ; coordonnées de la ligne BC (noire)
+    mov r8d, [tabx + 1 * WORD]
+    mov r9d, [taby + 1 * WORD]
+    mov dword[x1],r8d       ;remplacer la valeur par le x mis dans le tableau pour le premier point
+    mov dword[y1],r9d        ;remplacer la valeur par le y mis dans le tableau pour le premier point
+    mov r10d, [tabx + 2 * WORD]
+    mov r11d, [tabx + 2 * WORD]
+    mov dword[x2],r10d        ;remplacer la valeur par le x mis dans le tableau pour le second point
+    mov dword[y2],r11d       ;remplacer la valeur par le y mis dans le tableau pour le second point
     ; dessin de la ligne 1
     mov rdi,qword[display_name]
     mov rsi,qword[window]
@@ -194,15 +195,15 @@ dessin_lignes_triangles:
     call XDrawLine 
 
 
-        ; coordonnées de la ligne AB (noire)
-    mov r8, tabx[2]
-    mov r9, taby[2]
-    mov dword[x1],r8       ;remplacer la valeur par le x mis dans le tableau pour le premier point
-    mov dword[y1],r9        ;remplacer la valeur par le y mis dans le tableau pour le premier point
-    mov r10, tabx[0]
-    mov r11, taby[0]
-    mov dword[x2],r10        ;remplacer la valeur par le x mis dans le tableau pour le second point
-    mov dword[y2],r11       ;remplacer la valeur par le y mis dans le tableau pour le second point
+        ; coordonnées de la ligne CA (noire)
+    mov r8d, [tabx + 2 * WORD]
+    mov r9d, [taby + 2 * WORD]
+    mov dword[x1],r8d       ;remplacer la valeur par le x mis dans le tableau pour le premier point
+    mov dword[y1],r9d        ;remplacer la valeur par le y mis dans le tableau pour le premier point
+    mov r10d, [tabx + 0 * WORD]
+    mov r11d, [tabx + 0 * WORD]
+    mov dword[x2],r10d        ;remplacer la valeur par le x mis dans le tableau pour le second point
+    mov dword[y2],r11d       ;remplacer la valeur par le y mis dans le tableau pour le second point
     ; dessin de la ligne 1
     mov rdi,qword[display_name]
     mov rsi,qword[window]
@@ -212,7 +213,6 @@ dessin_lignes_triangles:
     mov r9d,dword[x2]	; coordonnée destination en x
     push qword[y2]		; coordonnée destination en y
     call XDrawLine 
-
 
 
 ;||||||||||||||||||||||||||||||||||||||||||||
@@ -257,8 +257,7 @@ random_point:
 
     mov dx,max_size
     rdrand ax
-    cmp CF,1
-    jne rander_point ; est-ce possible ?
+    jnc random_point
     div  dx
 
 
