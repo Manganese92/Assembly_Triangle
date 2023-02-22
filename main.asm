@@ -401,45 +401,45 @@ determinant:
     ; ===== Xba, Yba, Xbc, Ybc ===== 
 
     ; Xba = xa - xb
-    mov r8d, dword[tabx + 0*dword]
-    sub r8d, dword[tabx + 1*dword]
-    mov dword[rbp - DWORD * 1], r8d
+    mov eax, dword[tabx + 0*dword]
+    sub eax, dword[tabx + 1*dword]
+    mov dword[rbp - DWORD * 1], eax
 
     ; Yba = ya - yb
-    mov r8d, dword[taby + 0*dword]
-    sub r8d, dword[taby + 1*dword]
-    mov dword[rbp - DWORD * 2], r8d
+    mov eax, dword[taby + 0*dword]
+    sub eax, dword[taby + 1*dword]
+    mov dword[rbp - DWORD * 2], eax
 
     
     ; Xbc = xc - xb
-    mov r9d, [tabx + 2*dword]
-    sub r9d, [tabx + 1*dword]
-    mov dword[rbp - DWORD * 3], r9d
+    mov eax, [tabx + 2*dword]
+    sub eax, [tabx + 1*dword]
+    mov dword[rbp - DWORD * 3], eax
 
     ; Ybc = yc - yb
-    mov r9d, [taby + 2*dword]
-    sub r9d, [taby + 1*dword]
-    mov dword[rbp - DWORD * 4], r9d
+    mov eax, [taby + 2*dword]
+    sub eax, [taby + 1*dword]
+    mov dword[rbp - DWORD * 4], eax
 
 
     ; ===== Xba * Ybc  &  Xbc * Yba =====
     
     ; Xba * Ybc
-    mov r10d, dword[rbp - DWORD * 1]
-    imul r10d, Dword[rbp - DWORD * 4]
-    mov dword[rbp - DWORD * 5], r10d
+    mov eax, dword[rbp - DWORD * 1]
+    imul eax, Dword[rbp - DWORD * 4]
+    mov dword[rbp - DWORD * 5], eax
 
     ; Xbc * Yba
-    mov r10d, dword[rbp - DWORD * 3]
-    imul r10d, dword[rbp - DWORD * 2]
-    mov dword[rbp - DWORD * 6], r10d
+    mov eax, dword[rbp - DWORD * 3]
+    imul eax, dword[rbp - DWORD * 2]
+    mov dword[rbp - DWORD * 6], eax
 
 
     ; ===== (Xba * Ybc) - (Xbc * Yba) ===== 
 
-    mov r11d, dword[rbp - DWORD * 5]
+    mov eax, dword[rbp - DWORD * 5]
     mov ebx, dword[rbp - DWORD * 6]
-    sub r11, rbx
+    sub rax, rbx
 
     ; ===== END ===== 
 
