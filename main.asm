@@ -57,11 +57,11 @@ y1:	dd	0
 y2:	dd	0
 
 
-max_size: dw 400 
-min_x: dw 1
-max_x: dw 1
-min_y: dw 1
-max_y: dw 1
+max_size: dd 400 
+min_x: dd 1
+max_x: dd 1
+min_y: dd 1
+max_y: dd 1
 
 
 
@@ -105,7 +105,7 @@ mov rax, 0
 nb_aleatoire_x:
     mov ecx,dword[i] 
     call random_point
-    movzx [tabx + ecx * DWORD],ax
+    mov [tabx + ecx * DWORD], eax
     cmp dword[i],3
     je nb_aleatoire_y
     inc dword[i]
@@ -114,7 +114,7 @@ nb_aleatoire_x:
 
 nb_aleatoire_y:
     call random_point
-    movzx [tabx + ecx * DWORD],ax
+    mov [tabx + ecx * DWORD], eax
     cmp dword[i],5
     je min_max
     inc dword[i]
@@ -168,7 +168,7 @@ min_max:
         inc dword[i] 
 	    cmp dword[i],2  
 	    jne min_max_y
-        jmp main dessin
+        jmp main_dessin
 
 
         update_min_y:
@@ -380,9 +380,9 @@ mov rax, 0
 
 random_point:
 
-    rdrand ax
+    rdrand eax
     jnc random_point
-    div  word[max_size]
+    div  dword[max_size]
 
 
 
