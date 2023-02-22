@@ -216,6 +216,11 @@ jmp boucle
 
 dessin:
     
+        ;couleur de la ligne 1
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0x000000	; Couleur du crayon ; noir
+    call XSetForeground
         ; coordonnées de la ligne AB (noire)
     mov r8d, [tabx + 0 * WORD]
     mov r9d, [taby + 0 * WORD]
@@ -236,6 +241,11 @@ dessin:
     call XDrawLine 
 
 
+        ;couleur de la ligne 2
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0x000000	; Couleur du crayon ; noir
+    call XSetForeground
         ; coordonnées de la ligne BC (noire)
     mov r8d, [tabx + 1 * WORD]
     mov r9d, [taby + 1 * WORD]
@@ -256,6 +266,11 @@ dessin:
     call XDrawLine 
 
 
+        ;couleur de la ligne 3
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0x000000	; Couleur du crayon ; noir
+    call XSetForeground
         ; coordonnées de la ligne CA (noire)
     mov r8d, [tabx + 2 * WORD]
     mov r9d, [taby + 2 * WORD]
