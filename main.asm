@@ -3,15 +3,15 @@ global main
 
 section .data
 
+max_size, 400 
+min_x: dw 0
+max_x: dw 0
+min_y: dw 0
+max_y: dw 0
 
 section .bss
 
-count 1
-max_size 400 
-min_x
-max_x
-min_y
-max_y
+
 tabx:  	dw    3
 taby:  	dw    3
 i: resb 0
@@ -28,23 +28,23 @@ main:
 ;||||||||| Création d'un triangle |||||||||||
 ;||||||||||||||||||||||||||||||||||||||||||||
 
-
+mov byte[i],1
 
 nb_aleatoire_x:
     call random_point
     mov tabx,dx
-    cmp count,3
+    cmp byte[i],3
     je nb_aleatoire_y
-    inc count
+    inc byte[i]
     jmp nb_aleatoire_x
     
 
 nb_aleatoire_y:
     call random_point
     mov tab_y,dx
-    cmp count,5
+    cmp byte[i],5
     je min_max
-    inc count
+    inc byte[i]
     jmp nb_aleatoire_y
 
 
