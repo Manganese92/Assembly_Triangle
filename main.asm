@@ -1,3 +1,5 @@
+extern printf
+
 ; external functions from X11 library
 extern XOpenDisplay
 extern XDisplayName
@@ -56,10 +58,10 @@ y2:	dd	0
 
 
 max_size: dw 400 
-min_x: dw 0
-max_x: dw 0
-min_y: dw 0
-max_y: dw 0
+min_x: dw 1
+max_x: dw 1
+min_y: dw 1
+max_y: dw 1
 
 
 
@@ -103,7 +105,7 @@ mov rax, 0
 nb_aleatoire_x:
     movzx ecx,word[i] 
     call random_point
-    mov [tabx + ecx * WORD],dx
+    mov [tabx + ecx * WORD],ax
     cmp word[i],3
     je nb_aleatoire_y
     inc word[i]
@@ -112,40 +114,75 @@ nb_aleatoire_x:
 
 nb_aleatoire_y:
     call random_point
-    mov [tabx + ecx * WORD],dx
+    mov [tabx + ecx * WORD],ax
     cmp word[i],5
     je min_max
     inc word[i]
     jmp nb_aleatoire_y
 
 
-mov word[i],1
-
 
 min_max:
+
     min_max_x:
-        movzx ecx,word[i]  
-        mov eax, [tabx + 0 * WORD]
-        mov dword[max_x], eax
-        mov dword[min_x], eax
-        mov eax, [tabx+ ecx*WORD]
+        mov word[i],0
+        mov cx,word[i]
+        mov bx,word[min_x]  
+        mov ax,word[max_x]
+
+        cmp bx, [tabx+ cx*WORD]
+        jl update_min_x
+
+        cmp ax, [tabx+ cx*WORD]
+        jl update_max_x
 
         inc word[i] 
 	    cmp word[i],2  
-	    jne min_max_x 
+	    jne min_max_x
+        jmp min_max_y 
 
-    mov word[i],1
+
+        update_min_x:
+          mov bx, [tabx+ cx*WORD]
+          mov word[min_x], bx
+          jmp min_max_x
+
+        update_max_x:
+          mov ax, [tabx+ cx*WORD]
+          mov word[min_x], ax
+          jmp min_max_x
+
+
 
     min_max_y:
-        movzx ecx,word[i]   
-        mov eax, [taby + 0 * WORD]
-        mov dword[max_y], eax
-        mov dword[min_y], eax
-        mov eax, [taby+ ecx*WORD]
+        mov word[i],0
+        mov cx,word[i]
+        mov bx,word[min_y]  
+        mov ax,word[max_y]
 
-        inc word[i]
-	    cmp word[i],2
+        cmp bx, [taby+ cx*WORD]
+        jl update_min_y
+
+        cmp ax, [taby+ cx*WORD]
+        jl update_max_y
+
+        inc word[i] 
+	    cmp word[i],2  
 	    jne min_max_y
+        jmp miain dessin
+
+
+        update_min_y:
+          mov bx, [taby+ cx*WORD]
+          mov word[min_y], bx
+          jmp min_max_y
+
+        update_max_y:
+          mov ax, [taby+ cx*WORD]
+          mov word[min_y], ax
+          jmp min_max_y
+   
+
 
 
 
@@ -350,14 +387,27 @@ mov rax, 0
 
 random_point:
 
-    mov dx, word[max_size]
     rdrand ax
     jnc random_point
-    div  dx
+    div  word[max_size]
 
 
 determinant:
-    
+
+    push rbp
+    mov rbp, rsp
+
+    ; ===== LOCAL VARIABLES ===== ;
+    ; === making space === ;
+    ; 3 dwords = 12 bytes
+    sub rsp, 12
+
+    mov dword[rbp - DWORD * 1], edi ; xa
+    mov dword[rbp - DWORD * 2], esi ; ya
+    mov dword[rbp - DWORD * 3], edx ; xb
+    mov dword[rbp - DWORD * 4], ecx ; yb
+    mov dword[rbp - DWORD * 5], r8d ; xc
+    mov dword[rbp - DWORD * 6], r9d ; yc
 
 
 
