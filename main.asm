@@ -99,7 +99,7 @@ main:
 ;||||||||| Création d'un triangle |||||||||||
 ;||||||||||||||||||||||||||||||||||||||||||||
 
-mov word[i],1
+mov word[i],0
 mov rax, 0
 
 nb_aleatoire_x:
@@ -156,8 +156,7 @@ min_max:
 
     min_max_y:
         mov word[i],0
-        mov cx,word[i]
-        mov bx,word[min_y]  
+        mov cx,word[i]        mov bx,word[min_y]  
         mov ax,word[max_y]
 
         cmp bx, [taby+ cx*WORD]
@@ -345,14 +344,6 @@ closeDisplay:
     xor	    rdi,rdi
     call    exit
 
-;||||||||||||||||||||||||||||||||||||||||||||
-;||||||| determinant d'un triangle ||||||||||
-;||||||||||||||||||||||||||||||||||||||||||||
-
-
-
-
-
 
 ;||||||||||||||||||||||||||||||||||||||||||||||||||
 ;|||Position d'un point par rapport au triangle||||
@@ -385,11 +376,15 @@ global random_point
 global determinant
 mov rax, 0
 
+
+
 random_point:
 
     rdrand ax
     jnc random_point
     div  word[max_size]
+
+
 
 
 determinant:
@@ -402,13 +397,53 @@ determinant:
     ; 3 dwords = 12 bytes
     sub rsp, 12
 
-    mov dword[rbp - DWORD * 1], edi ; xa
-    mov dword[rbp - DWORD * 2], esi ; ya
-    mov dword[rbp - DWORD * 3], edx ; xb
-    mov dword[rbp - DWORD * 4], ecx ; yb
-    mov dword[rbp - DWORD * 5], r8d ; xc
-    mov dword[rbp - DWORD * 6], r9d ; yc
+
+    ; ===== Xba, Yba, Xbc, Ybc ===== 
+
+    ; Xba = xa - xb
+    mov r8w, word[tabx + 0*word]
+    sub r8w, word[tabx + 1*word]
+    mov word[rbp - WORD * 1], r8w
+
+    ; Yba = ya - yb
+    mov r8w, word[taby + 0*word]
+    sub r8w, word[taby + 1*word]
+    mov word[rbp - WORD * 2], r8w
+
+    
+    ; Xbc = xc - xb
+    mov r9w, [tabx + 2*word]
+    sub r9w, [tabx + 1*word]
+    mov word[rbp - WORD * 3], r9w
+
+    ; Ybc = yc - yb
+    mov r9w, [taby + 2*word]
+    sub r9w, [taby + 1*word]
+    mov word[rbp - WORD * 4], r9w
 
 
+    ; ===== Xba * Ybc  &  Xbc * Yba =====
+    
+    ; Xba * Ybc
+    mov r10w, word[rbp - WORD * 1]
+    imul r10w, word[rbp - WORD * 4]
+    mov word[rbp - WORD * 5], r10w
+
+    ; Xbc * Yba
+    mov r10w, word[rbp - WORD * 3]
+    imul r10w, word[rbp - WORD * 2]
+    mov word[rbp - WORD * 6], r10w
+
+
+    ; ===== (Xba * Ybc) - (Xbc * Yba) ===== 
+
+    mov r11w, word[rbp - WORD * 5]
+    mov ebx, word[rbp - WORD * 6]
+    sub r11, rbx
+
+    ; ===== END ===== 
+
+mov rsp, rbp
+pop rbp
 
 ret
