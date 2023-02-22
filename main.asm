@@ -1,9 +1,59 @@
-%define WORD 2
+; external functions from X11 library
+extern XOpenDisplay
+extern XDisplayName
+extern XCloseDisplay
+extern XCreateSimpleWindow
+extern XMapWindow
+extern XRootWindow
+extern XSelectInput
+extern XFlush
+extern XCreateGC
+extern XSetForeground
+extern XDrawLine
+extern XDrawPoint
+extern XFillArc
+extern XNextEvent
+
+; external functions from stdio library (ld-linux-x86-64.so.2)    
+extern printf
+extern exit
+
+%define	StructureNotifyMask	131072
+%define KeyPressMask		1
+%define ButtonPressMask		4
+%define MapNotify		19
+%define KeyPress		2
+%define ButtonPress		4
+%define Expose			12
+%define ConfigureNotify		22
+%define CreateNotify 16
+%define QWORD	8
+%define DWORD	4
+%define WORD	2
+%define BYTE	1
+
+
+
+;||||||||||||||||||||||||||||||||||||||||||||
+;||||||||||||| Global main ||||||||||||||||||
+;||||||||||||||||||||||||||||||||||||||||||||
+
+
+
 
 global main
 
 
+
 section .data
+
+event:		times	24 dq 0
+
+x1:	dd	0
+x2:	dd	0
+y1:	dd	0
+y2:	dd	0
+
 
 max_size: dw 400 
 min_x: dw 0
@@ -11,12 +61,29 @@ max_x: dw 0
 min_y: dw 0
 max_y: dw 0
 
+
+
+
+
 section .bss
+
+display_name:	resq	1
+screen:			resd	1
+depth:         	resd	1
+connection:    	resd	1
+width:         	resd	1
+height:        	resd	1
+window:		resq	1
+gc:		resq	1
+
 
 
 tabx:  	resw    3
 taby:  	resw    3
 i: resb 0
+
+
+
 
 
 section .text
@@ -43,7 +110,7 @@ nb_aleatoire_x:
 
 nb_aleatoire_y:
     call random_point
-    mov tab_y,dx
+    mov taby,dx
     cmp byte[i],5
     je min_max
     inc byte[i]
