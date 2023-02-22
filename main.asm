@@ -80,8 +80,8 @@ gc:		resq	1
 
 
 
-tabx:  	resw    3
-taby:  	resw    3
+tabx:  	resd    3
+taby:  	resd    3
 i: resb 0
 
 
@@ -99,25 +99,25 @@ main:
 ;||||||||| Création d'un triangle |||||||||||
 ;||||||||||||||||||||||||||||||||||||||||||||
 
-mov word[i],0
+mov dword[i],0
 mov rax, 0
 
 nb_aleatoire_x:
-    movzx ecx,word[i] 
+    mov ecx,dword[i] 
     call random_point
-    mov [tabx + ecx * WORD],ax
-    cmp word[i],3
+    movzx [tabx + ecx * DWORD],ax
+    cmp dword[i],3
     je nb_aleatoire_y
-    inc word[i]
+    inc dword[i]
     jmp nb_aleatoire_x
     
 
 nb_aleatoire_y:
     call random_point
-    mov [tabx + ecx * WORD],ax
-    cmp word[i],5
+    movzx [tabx + ecx * DWORD],ax
+    cmp dword[i],5
     je min_max
-    inc word[i]
+    inc dword[i]
     jmp nb_aleatoire_y
 
 
@@ -125,60 +125,60 @@ nb_aleatoire_y:
 min_max:
 
     min_max_x:
-        mov word[i],0
-        mov cx,word[i]
-        mov bx,word[min_x]  
-        mov ax,word[max_x]
+        mov dword[i],0
+        mov ecx,dword[i]
+        mov ebx,dword[min_x]  
+        mov eax,dword[max_x]
 
-        cmp bx, [tabx+ cx*WORD]
+        cmp ebx, [tabx+ ecx*DWORD]
         jl update_min_x
-
-        cmp ax, [tabx+ cx*WORD]
+        cmp eax, [tabx+ ecx*DWORD]
         jl update_max_x
 
-        inc word[i] 
-	    cmp word[i],2  
+        inc dword[i] 
+	    cmp dword[i],2  
 	    jne min_max_x
         jmp min_max_y 
 
 
         update_min_x:
-          mov bx, [tabx+ cx*WORD]
-          mov word[min_x], bx
+          mov ebx, [tabx+ ecx*DWORD]
+          mov dword[min_x], ebx
           jmp min_max_x
 
         update_max_x:
-          mov ax, [tabx+ cx*WORD]
-          mov word[min_x], ax
+          mov eax, [tabx+ ecx*DWORD]
+          mov dword[min_x], eax
           jmp min_max_x
 
 
 
     min_max_y:
-        mov word[i],0
-        mov cx,word[i]        mov bx,word[min_y]  
-        mov ax,word[max_y]
+        mov dword[i],0
+        mov ecx, dword[i]        
+        mov ebx, dword[min_y]  
+        mov eax, dword[max_y]
 
-        cmp bx, [taby+ cx*WORD]
+        cmp ebx, [taby+ ecx*DWORD]
         jl update_min_y
 
-        cmp ax, [taby+ cx*WORD]
+        cmp eax, [taby+ ecx*DWORD]
         jl update_max_y
 
-        inc word[i] 
-	    cmp word[i],2  
+        inc dword[i] 
+	    cmp dword[i],2  
 	    jne min_max_y
-        jmp miain dessin
+        jmp main dessin
 
 
         update_min_y:
-          mov bx, [taby+ cx*WORD]
-          mov word[min_y], bx
+          mov ebx, [taby+ ecx*DWORD]
+          mov dword[min_y], ebx
           jmp min_max_y
 
         update_max_y:
-          mov ax, [taby+ cx*WORD]
-          mov word[min_y], ax
+          mov eax, [taby+ ecx*DWORD]
+          mov dword[min_y], eax
           jmp min_max_y
    
 
@@ -260,12 +260,12 @@ dessin:
     mov edx,0x000000	; Couleur du crayon ; noir
     call XSetForeground
         ; coordonnées de la ligne AB (noire)
-    mov r8d, [tabx + 0 * WORD]
-    mov r9d, [taby + 0 * WORD]
+    mov r8d, [tabx + 0 * DWORD]
+    mov r9d, [taby + 0 * DWORD]
     mov dword[x1],r8d       ;remplacer la valeur par le x mis dans le tableau pour le premier point
     mov dword[y1],r9d        ;remplacer la valeur par le y mis dans le tableau pour le premier point
-    mov r10d, [tabx + 1 * WORD]
-    mov r11d, [tabx + 1 * WORD]
+    mov r10d, [tabx + 1 * DWORD]
+    mov r11d, [tabx + 1 * DWORD]
     mov dword[x2],r10d        ;remplacer la valeur par le x mis dans le tableau pour le second point
     mov dword[y2],r11d       ;remplacer la valeur par le y mis dans le tableau pour le second point
     ; dessin de la ligne 1
@@ -285,12 +285,12 @@ dessin:
     mov edx,0x000000	; Couleur du crayon ; noir
     call XSetForeground
         ; coordonnées de la ligne BC (noire)
-    mov r8d, [tabx + 1 * WORD]
-    mov r9d, [taby + 1 * WORD]
+    mov r8d, [tabx + 1 * DWORD]
+    mov r9d, [taby + 1 * DWORD]
     mov dword[x1],r8d       ;remplacer la valeur par le x mis dans le tableau pour le premier point
     mov dword[y1],r9d        ;remplacer la valeur par le y mis dans le tableau pour le premier point
-    mov r10d, [tabx + 2 * WORD]
-    mov r11d, [tabx + 2 * WORD]
+    mov r10d, [tabx + 2 * DWORD]
+    mov r11d, [tabx + 2 * DWORD]
     mov dword[x2],r10d        ;remplacer la valeur par le x mis dans le tableau pour le second point
     mov dword[y2],r11d       ;remplacer la valeur par le y mis dans le tableau pour le second point
     ; dessin de la ligne 1
@@ -310,12 +310,12 @@ dessin:
     mov edx,0x000000	; Couleur du crayon ; noir
     call XSetForeground
         ; coordonnées de la ligne CA (noire)
-    mov r8d, [tabx + 2 * WORD]
-    mov r9d, [taby + 2 * WORD]
+    mov r8d, [tabx + 2 * DWORD]
+    mov r9d, [taby + 2 * DWORD]
     mov dword[x1],r8d       ;remplacer la valeur par le x mis dans le tableau pour le premier point
     mov dword[y1],r9d        ;remplacer la valeur par le y mis dans le tableau pour le premier point
-    mov r10d, [tabx + 0 * WORD]
-    mov r11d, [tabx + 0 * WORD]
+    mov r10d, [tabx + 0 * DWORD]
+    mov r11d, [tabx + 0 * DWORD]
     mov dword[x2],r10d        ;remplacer la valeur par le x mis dans le tableau pour le second point
     mov dword[y2],r11d       ;remplacer la valeur par le y mis dans le tableau pour le second point
     ; dessin de la ligne 1
