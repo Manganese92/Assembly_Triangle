@@ -98,6 +98,7 @@ main:
 ;||||||||||||||||||||||||||||||||||||||||||||
 
 mov word[i],1
+mov rax, 0
 
 nb_aleatoire_x:
     movzx ecx,word[i] 
@@ -133,7 +134,7 @@ min_max:
 	    cmp word[i],2  
 	    jne min_max_x 
 
-    mov byte[i],1
+    mov word[i],1
 
     min_max_y:
         movzx ecx,word[i]   
@@ -152,65 +153,66 @@ min_max:
 ;||||||||| lignes d'un triangle |||||||||||||
 ;||||||||||||||||||||||||||||||||||||||||||||
 
+main_dessin:
+    xor     rdi,rdi
+    call    XOpenDisplay	; Création de display
+    mov     qword[display_name],rax	; rax=nom du display
 
-xor     rdi,rdi
-call    XOpenDisplay	; Création de display
-mov     qword[display_name],rax	; rax=nom du display
+    ; display_name structure
+    ; screen = DefaultScreen(display_name);
+    mov     rax,qword[display_name]
+    mov     eax,dword[rax+0xe0]
+    mov     dword[screen],eax
 
-; display_name structure
-; screen = DefaultScreen(display_name);
-mov     rax,qword[display_name]
-mov     eax,dword[rax+0xe0]
-mov     dword[screen],eax
+    mov rdi,qword[display_name]
+    mov esi,dword[screen]
+    call XRootWindow
+    mov rbx,rax
 
-mov rdi,qword[display_name]
-mov esi,dword[screen]
-call XRootWindow
-mov rbx,rax
+    mov rdi,qword[display_name]
+    mov rsi,rbx
+    mov rdx,10
+    mov rcx,10
+    mov r8,400	; largeur
+    mov r9,400	; hauteur
+    push 0xFFFFFF	; background  0xRRGGBB
+    push 0x00FF00
+    push 1
+    call XCreateSimpleWindow
+    mov qword[window],rax
 
-mov rdi,qword[display_name]
-mov rsi,rbx
-mov rdx,10
-mov rcx,10
-mov r8,400	; largeur
-mov r9,400	; hauteur
-push 0xFFFFFF	; background  0xRRGGBB
-push 0x00FF00
-push 1
-call XCreateSimpleWindow
-mov qword[window],rax
+    mov rdi,qword[display_name]
+    mov rsi,qword[window]
+    mov rdx,131077 ;131072
+    call XSelectInput
 
-mov rdi,qword[display_name]
-mov rsi,qword[window]
-mov rdx,131077 ;131072
-call XSelectInput
+    mov rdi,qword[display_name]
+    mov rsi,qword[window]
+    call XMapWindow
 
-mov rdi,qword[display_name]
-mov rsi,qword[window]
-call XMapWindow
+    mov rsi,qword[window]
+    mov rdx,0
+    mov rcx,0
+    call XCreateGC
+    mov qword[gc],rax
 
-mov rsi,qword[window]
-mov rdx,0
-mov rcx,0
-call XCreateGC
-mov qword[gc],rax
-
-mov rdi,qword[display_name]
-mov rsi,qword[gc]
-mov rdx,0x000000	; Couleur du crayon
-call XSetForeground
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov rdx,0x000000	; Couleur du crayon
+    call XSetForeground
 
 boucle: ; boucle de gestion des évènements
-mov rdi,qword[display_name]
-mov rsi,event
-call XNextEvent
 
-cmp dword[event],ConfigureNotify	; à l'apparition de la fenêtre
-je dessin							; on saute au label 'dessin'
+    mov rdi,qword[display_name]
+    mov rsi,event
+    call XNextEvent
 
-cmp dword[event],KeyPress			; Si on appuie sur une touche
-je closeDisplay						; on saute au label 'closeDisplay' qui ferme la fenêtre
-jmp boucle
+    cmp dword[event],ConfigureNotify	; à l'apparition de la fenêtre
+    je dessin							; on saute au label 'dessin'
+
+    cmp dword[event],KeyPress			; Si on appuie sur une touche
+    je closeDisplay						; on saute au label 'closeDisplay' qui ferme la fenêtre
+    jmp boucle
 
 
 
@@ -343,14 +345,19 @@ ret
 
 
 global random_point
+global determinant
+mov rax, 0
 
 random_point:
 
-    mov dx,max_size
+    mov dx, word[max_size]
     rdrand ax
     jnc random_point
     div  dx
 
+
+determinant:
+    
 
 
 
