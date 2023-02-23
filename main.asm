@@ -63,6 +63,9 @@ max_x: dd 1
 min_y: dd 1
 max_y: dd 1
 
+point_x: dd 0
+point_y: dd 0
+
 
 
 
@@ -160,10 +163,10 @@ min_max:
         mov eax, dword[max_y]
 
         cmp ebx, [taby+ ecx*DWORD]
-        jl update_min_y
+        jb update_min_y
 
         cmp eax, [taby+ ecx*DWORD]
-        jl update_max_y
+        jb update_max_y
 
         inc dword[i] 
 	    cmp dword[i],2  
@@ -349,6 +352,43 @@ closeDisplay:
 ;|||Position d'un point par rapport au triangle||||
 ;||||||||||||||||||||||||||||||||||||||||||||||||||
 
+sens_triangle:
+    call determiant 
+    cmp rax,0
+    jl triangle_direct
+    jg triangle_indirect
+
+
+triangle_direct:
+    mov rcx, min_x
+    mov rbx, min_y
+    mov r8d, max_x
+    mov r9d, max_y
+    mov point_x, rcx
+    mov point_y, rbx
+
+    call determinant_Pab
+    cmp rax,0
+    jl non_colorier_d
+
+    call determinant_Pbc
+    cmp rdx,0
+    jl non_colorier_d
+
+    call determinant_Pca
+    cmp rsi,0
+    jl non_colorier_d
+
+    jmp colorier_d
+
+
+non_colorier_d:
+    cmp rcx, r8d
+    je triangle_direct
+
+
+
+
 
 
 
@@ -357,7 +397,7 @@ closeDisplay:
 ;|||||||||||||| Fin programme |||||||||||||||
 ;||||||||||||||||||||||||||||||||||||||||||||
 
-
+fin:
 ; Pour fermer le programme proprement :
 mov    rax, 60         
 mov    rdi, 0
@@ -374,16 +414,18 @@ ret
 
 global random_point
 global determinant
+global determinant_Pab
+global determinant_Pbc
+global determinant_Pac
 mov rax, 0
 
 
 
 random_point:
 
-    rdrand eax
+    rdrand ax
     jnc random_point
     div  dword[max_size]
-
 
 
 
@@ -401,7 +443,7 @@ determinant:
     ; ===== Xba, Yba, Xbc, Ybc ===== 
 
     ; Xba = xa - xb
-    mov eax, dword[tabx + 0*dword]
+    mov eax, dword[tabx + 0 * dword]
     sub eax, dword[tabx + 1*dword]
     mov dword[rbp - DWORD * 1], eax
 
@@ -445,5 +487,194 @@ determinant:
 
 mov rsp, rbp
 pop rbp
+
+
+
+determinant_Pab:
+
+    push rbp
+    mov rbp, rsp
+
+    ; ===== LOCAL VARIABLES ===== ;
+    ; === making space === ;
+    ; 3 dwords = 12 bytes
+    sub rsp, 12
+
+
+    ; ===== Xab, Yab, Xap, Yap ===== 
+
+    ; Xab = xb - xa
+    mov eax, dword[tabx + 1 * dword]
+    sub eax, dword[tabx + 0*dword]
+    mov dword[rbp - DWORD * 1], eax
+
+    ; Yab = yb - ya
+    mov eax, dword[taby + 1*dword]
+    sub eax, dword[taby + 0*dword]
+    mov dword[rbp - DWORD * 2], eax
+
+    
+    ; Xap = xp - xa
+    mov eax, dword[rcx]
+    sub eax, [tabx + 0*dword]
+    mov dword[rbp - DWORD * 3], eax
+
+    ; Yap = yp - ya
+    mov eax, dword[rbx]
+    sub eax, [taby + 0*dword]
+    mov dword[rbp - DWORD * 4], eax
+
+
+    ; ===== Xab * Yap  &  Xap * Yab =====
+    
+    ; Xab * Yap
+    mov eax, dword[rbp - DWORD * 1]
+    imul eax, Dword[rbp - DWORD * 4]
+    mov dword[rbp - DWORD * 5], eax
+
+    ; Xap * Yab
+    mov eax, dword[rbp - DWORD * 3]
+    imul eax, dword[rbp - DWORD * 2]
+    mov dword[rbp - DWORD * 6], eax
+
+
+    ; ===== (Xab * Yap) - (Xap * Yab) ===== 
+
+    mov eax, dword[rbp - DWORD * 5]
+    mov ebx, dword[rbp - DWORD * 6]
+    sub rax, rbx
+
+    ; ===== END ===== 
+
+mov rsp, rbp
+pop rbp
+
+
+
+determinant_Pbc:
+
+    push rbp
+    mov rbp, rsp
+
+    ; ===== LOCAL VARIABLES ===== ;
+    ; === making space === ;
+    ; 3 dwords = 12 bytes
+    sub rsp, 12
+
+
+    ; ===== Xbc, Ybc, Xbp, Ybp ===== 
+
+    ; Xbc = xc - xb
+    mov edx, dword[tabx + 2 * dword]
+    sub edx, dword[tabx + 1*dword]
+    mov dword[rbp - DWORD * 1], edx
+
+    ; Ybc = yc - yb
+    mov edx, dword[taby + 2*dword]
+    sub edx, dword[taby + 1*dword]
+    mov dword[rbp - DWORD * 2], edx
+
+    
+    ; Xbp = xp - xb
+    mov edx, dword[rcx]
+    sub edx, [tabx + 1*dword]
+    mov dword[rbp - DWORD * 3], edx
+
+    ; Ybp = yp - yb
+    mov edx, dword[rbx]
+    sub edx, [taby + 1*dword]
+    mov dword[rbp - DWORD * 4], edx
+
+
+    ; ===== Xbc * Ybp  &  Xbp * Ybc =====
+    
+    ; Xbc * Ybp
+    mov edx, dword[rbp - DWORD * 1]
+    imul edx, Dword[rbp - DWORD * 4]
+    mov dword[rbp - DWORD * 5], edx
+
+    ; Xbp * Ybc
+    mov edx, dword[rbp - DWORD * 3]
+    imul edx, dword[rbp - DWORD * 2]
+    mov dword[rbp - DWORD * 6], edx
+
+
+    ; ===== (Xbc * Ybp) - (Xbp * Ybc) ===== 
+
+    mov edx, dword[rbp - DWORD * 5]
+    mov ebx, dword[rbp - DWORD * 6]
+    sub rdx, rbx
+
+    ; ===== END ===== 
+
+mov rsp, rbp
+pop rbp
+
+
+
+
+determinant_Pca:
+
+    push rbp
+    mov rbp, rsp
+
+    ; ===== LOCAL VARIABLES ===== ;
+    ; === making space === ;
+    ; 3 dwords = 12 bytes
+    sub rsp, 12
+
+
+    ; ===== Xca, Yca, Xcp, Ycp ===== 
+
+    ; Xca = xa - xc
+    mov esi, dword[tabx + 0 * dword]
+    sub esi, dword[tabx + 2*dword]
+    mov dword[rbp - DWORD * 1], edx
+
+    ; Yca = xa - yc
+    mov esi, dword[taby + 0*dword]
+    sub esi, dword[taby + 2*dword]
+    mov dword[rbp - DWORD * 2], edx
+
+    
+    ; Xcp = xp - xc
+    mov esi, dword[rcx]
+    sub esi, [tabx + 1*dword]
+    mov dword[rbp - DWORD * 3], esi
+
+    ; Ybp = yp - yb
+    mov esi, dword[rbx]
+    sub esi, [taby + 1*dword]
+    mov dword[rbp - DWORD * 4], esi
+
+
+    ; ===== Xca * Ycp  &  Xcp * Yca =====
+    
+    ; Xca * Ycp
+    mov esi, dword[rbp - DWORD * 1]
+    imul esi, Dword[rbp - DWORD * 4]
+    mov dword[rbp - DWORD * 5], esi
+
+    ; Xcp * Yca
+    mov esi, dword[rbp - DWORD * 3]
+    imul esi, dword[rbp - DWORD * 2]
+    mov dword[rbp - DWORD * 6], esi
+
+
+    ; ===== (Xca * Ycp) - (Xcp * Yca) ===== 
+
+    mov esi, dword[rbp - DWORD * 5]
+    mov esi, dword[rbp - DWORD * 6]
+    sub rsi, rbx
+
+    ; ===== END ===== 
+
+mov rsp, rbp
+pop rbp
+
+
+
+
+
 
 ret
