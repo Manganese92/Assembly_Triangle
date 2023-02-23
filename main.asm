@@ -359,6 +359,10 @@ sens_triangle:
     jg triangle_indirect
 
 
+
+
+
+
 triangle_direct:
     mov rcx, min_x
     mov rbx, min_y
@@ -369,24 +373,87 @@ triangle_direct:
 
     call determinant_Pab
     cmp rax,0
-    jl non_colorier_d
+    jl non_colorier_td
 
     call determinant_Pbc
     cmp rdx,0
-    jl non_colorier_d
+    jl non_colorier_td
 
     call determinant_Pca
     cmp rsi,0
-    jl non_colorier_d
+    jl non_colorier_td
 
-    jmp colorier_d
+    jmp colorier_td
 
 
-non_colorier_d:
+non_colorier_td:
     cmp rcx, r8d
     je triangle_direct
 
+colorier_td:
+    ;couleur du point 2
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0x00FF00	; Couleur du crayon ; vert
+    call XSetForeground
 
+    ; Dessin d'un point vert: coordonnées (100,250)
+    mov rdi,qword[display_name]
+    mov rsi,qword[window]
+    mov rdx,qword[gc]
+    mov ecx, point_x	; coordonnée source en x
+    mov r8d, point_y	; coordonnée source en y
+    call XDrawPoint
+
+
+
+
+
+
+
+
+
+triangle_indirect:
+    mov rcx, min_x
+    mov rbx, min_y
+    mov r8d, max_x
+    mov r9d, max_y
+    mov point_x, rcx
+    mov point_y, rbx
+
+    call determinant_Pab
+    cmp rax,0
+    jl non_colorier_ti
+
+    call determinant_Pbc
+    cmp rdx,0
+    jl non_colorier_ti
+
+    call determinant_Pca
+    cmp rsi,0
+    jl non_colorier_ti
+
+    jmp colorier_ti
+
+
+non_colorier_ti:
+    cmp rcx, r8d
+    je triangle_indirect
+
+colorier_ti:
+    ;couleur du point 2
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0x00FF00	; Couleur du crayon ; vert
+    call XSetForeground
+
+    ; Dessin d'un point vert: coordonnées (100,250)
+    mov rdi,qword[display_name]
+    mov rsi,qword[window]
+    mov rdx,qword[gc]
+    mov ecx, point_x	; coordonnée source en x
+    mov r8d, point_y	; coordonnée source en y
+    call XDrawPoint
 
 
 
